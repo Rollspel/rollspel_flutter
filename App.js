@@ -1,16 +1,21 @@
-import * as React from "react";
-import { View, Text } from "react-native";
 
-export default function App() {
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+
+import HomeScreen from './screens/HomeScreen';
+
+const Stack = createStackNavigator();
+
+function App() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Universal React with Expo</Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
+
+export default App;

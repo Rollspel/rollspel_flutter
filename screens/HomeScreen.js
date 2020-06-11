@@ -61,6 +61,7 @@ const HomeScreen = (props) => {
 
 const styles = StyleSheet.create({
     screen: {
+        paddingVertical: 50,
         flex: 1,
         backgroundColor: theme.color.white
     },

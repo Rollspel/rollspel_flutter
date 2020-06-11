@@ -1,28 +1,33 @@
 import * as React from 'react';
 import {ScrollView, View, Image, StyleSheet, Text, TextInput } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
 import theme from '../modules/theme';
 import Button from '../components/Button';
 
 const SelectPlayerScreen = (props) => {
-
     const { game } = props.route.params;
+
+    const handleLaunchGamePress = () => {
+        props.navigation.navigate('GameScreen', {game})
+    };
+
     return (
       <View style={styles.screen}>
             <Image source={game.cover} style={styles.cover} />
-            <Text style={styles.title}>LIST OF PLAYERS</Text>
             <ScrollView style={styles.content}>
                 {[...Array(game.players)].map((player, index) => (
-                    <View style={styles.playerContainer}>
+                    <Animatable.View style={styles.playerContainer} animation="slideInDown">
                         <Text style={styles.playerTitle}>Player {index + 1}</Text>
                         <TextInput style={styles.textInput} />      
-                    </View>  
+                    </Animatable.View>  
                 ))}
             </ScrollView>
             <Button style={styles.button} 
                 color={theme.color.black} 
                 text="LAUNCH" 
                 textColor={theme.color.white} 
+                onPress={handleLaunchGamePress}
             />
         </View>
     );
@@ -38,12 +43,9 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 350,
     },
-    title: {
-        fontSize: 20,
-        textAlign: 'center',
-        fontWeight: 'bold',
-        letterSpacing: 1,
-        paddingVertical: theme.layout.paddingL,
+    content: {
+        paddingTop: theme.layout.paddingL,
+        paddingHorizontal: theme.layout.paddingL,
     },
     playerContainer: {
         marginBottom: theme.layout.paddingM,
@@ -61,11 +63,8 @@ const styles = StyleSheet.create({
         borderRadius: theme.layout.radius,
         paddingVertical: theme.layout.paddingM,
     },
-    content: {
-        paddingHorizontal: theme.layout.paddingL,
-    },
     button: {
-        marginHorizontal: theme.layout.paddingM,
+        marginHorizontal: theme.layout.paddingL,
     }
 });
 

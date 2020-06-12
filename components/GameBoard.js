@@ -3,18 +3,25 @@ import {TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
 import theme from '../modules/theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import { withSocketContext } from './SocketProvider';
 
-const GameBoard = ({ board }) => {
+const GameBoard = ({ board, socket, activePlayerIndex }) => {
+
+    const handleCasePress = (rowIndex, columnIndex) => {
+        board[rowIndex][columnIndex] = activePlayerIndex;
+        socket.emit('player_tap', { gameboardID: '12345', board: board});
+    };
+
     return (
         <Animatable.View style={styles.boardContainer} animation="fadeIn">
-        {board.map(row => (
+        {board.map((row, rowIndex) => (
             <View style={styles.boardGame}>
-            {row.map(column => {
+            {row.map((column, columnIndex) => {
                 return (
-                    <View style={styles.boardCase}>
+                    <TouchableOpacity style={styles.boardCase} onPress={() => handleCasePress(rowIndex, columnIndex)}>
                         {column === 1 ? <MaterialCommunityIcons name="power-off" size={80} color={theme.color.textGray} />
                         : column === 2 ? <MaterialCommunityIcons name="close" size={80} color={theme.color.textGray} /> : undefined}
-                    </View>
+                    </TouchableOpacity>
                 )
             })}
             </View>

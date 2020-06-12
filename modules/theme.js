@@ -6,7 +6,8 @@ const theme = {
         white: '#fff', 
         black: '#000',
         gray: '#aaa5a5',
-        textGray: '#5b5b5b'
+        textGray: '#5b5b5b',
+        error: '#db1515',
     },
     layout: {
         paddingS: 5,

@@ -7,19 +7,26 @@ import Button from '../components/Button';
 
 const SelectPlayerScreen = (props) => {
     const { game } = props.route.params;
+    const [players, setPlayers] = React.useState({});
 
     const handleLaunchGamePress = () => {
-        props.navigation.navigate('GameScreen', {game})
+        if(Object.keys(players).length === game.players){
+            props.navigation.navigate('GameScreen', {game, players})
+        }
     };
+
+    const handleChangePlayer = (index, value) => {
+        setPlayers({...players, [parseInt(index)]: value});
+    }
 
     return (
       <View style={styles.screen}>
             <Image source={game.cover} style={styles.cover} />
             <ScrollView style={styles.content}>
                 {[...Array(game.players)].map((player, index) => (
-                    <Animatable.View style={styles.playerContainer} animation="slideInDown">
+                    <Animatable.View style={styles.playerContainer} animation="slideInDown" key={index}>
                         <Text style={styles.playerTitle}>Player {index + 1}</Text>
-                        <TextInput style={styles.textInput} />      
+                        <TextInput style={styles.textInput} onChangeText={(value) => handleChangePlayer(index, value)}/>      
                     </Animatable.View>  
                 ))}
             </ScrollView>

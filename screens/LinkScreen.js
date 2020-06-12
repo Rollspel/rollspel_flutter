@@ -3,14 +3,30 @@ import { View, Text, ImageBackground, StyleSheet, TextInput } from 'react-native
 
 import theme from '../modules/theme';
 import Button from '../components/Button';
+import { withSocketContext } from '../components/SocketProvider';
 
 const background = require('../modules/images/background.jpg');
 
 const LinkScreen = (props) => {
     const {onSubmitPress} = props;
+    const {socket} = props.socket;
+    const [gameboardID, setGameboardID] = React.useState('');
+    const [error, setError] = React.useState('');
+
+    React.useEffect(() => {
+        if(socket){
+            socket.on('player_link_gameboard_success', () => {
+                onSubmitPress(true);
+            });
+            socket.on('player_link_gameboard_fail', () => {
+                setError('Wrong gameboard ID')
+                setTimeout(() => setError(''), 2000);
+            });
+        }
+    }, [socket]);
 
     const handleSubmitPress = () => {
-        onSubmitPress(true);
+        socket.emit('player_link_gameboard', gameboardID);
     };
 
     return (
@@ -19,10 +35,12 @@ const LinkScreen = (props) => {
               <View style={styles.box}>
                 <Text style={styles.title}>Enter your gameboard ID to continue</Text>
                 <TextInput
+                    onChangeText={(value) => setGameboardID(value)}
                     editable
                     maxLength={40}
                     style={styles.textInput}
                 />
+                {error ? <Text style={styles.textError}>{error}</Text> : null}
                 <Button 
                     text="SUBMIT"
                     color={theme.color.black}
@@ -60,7 +78,11 @@ const styles = StyleSheet.create({
         borderRadius: theme.layout.radius,
         paddingVertical: theme.layout.paddingM,
     },
+    textError: {
+        paddingVertical: theme.layout.paddingS,
+        color: theme.color.error
+    },
 });
 
-export default LinkScreen;
+export default withSocketContext(LinkScreen);
   

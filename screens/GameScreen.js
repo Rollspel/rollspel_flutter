@@ -13,7 +13,7 @@ import {withSocketContext} from '../components/SocketProvider';
 import GameScore from '../components/GameScore';
 
 const GameScreen = (props) => {
-  const [beginTimer, setBeginTimer] = React.useState(10);
+  const [beginTimer, setBeginTimer] = React.useState(5);
   const [beginTimerActive, setBeginTimerActive] = React.useState(true);
   const [gameTimerActive, setGameTimerActive] = React.useState(false);
   const [turnMessage, setTurnMessage] = React.useState(false);

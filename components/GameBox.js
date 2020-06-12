@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     margin: theme.layout.paddingM,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    padding: theme.layout.paddingM,
+    borderRadius: theme.layout.radius,
   },
   row: {
     flexDirection: 'row',
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: 'justify',
-    color: theme.color.textGray,
+    color: theme.color.black,
   },
   players: {
     fontSize: 12,

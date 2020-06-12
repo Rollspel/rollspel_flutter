@@ -1,7 +1,6 @@
-
 import * as React from 'react';
-import { NavigationContainer, Link } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {NavigationContainer, Link} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import io from 'socket.io-client';
 
@@ -17,7 +16,7 @@ const Stack = createStackNavigator();
 const App = () => {
   const [isLinked, setIsLinked] = React.useState(false);
   const [socket, setSocket] = React.useState({});
-  
+
   React.useEffect(() => {
     const initSocket = {
       socket: io.connect('http://localhost:5000/', {
@@ -34,43 +33,45 @@ const App = () => {
     setSocket(initSocket);
   }, []);
 
-  
-  handleSubmitPress = (isValid) => {
-    if(isValid){
+  const handleSubmitPress = (isValid) => {
+    if (isValid) {
       setIsLinked(true);
     }
-  }
+  };
 
   return (
     <SocketProvider socket={socket}>
       <NavigationContainer>
-        {!isLinked ?
+        {!isLinked ? (
           <Stack.Navigator>
-            <Stack.Screen name="LinkScreen" options={{ headerShown: false }}>
-              {props => <LinkScreen {...props} onSubmitPress={handleSubmitPress} />}
+            <Stack.Screen name="LinkScreen" options={{headerShown: false}}>
+              {(props) => (
+                <LinkScreen {...props} onSubmitPress={handleSubmitPress} />
+              )}
             </Stack.Screen>
           </Stack.Navigator>
-          : 
-            <Stack.Navigator>
-              <Stack.Screen 
-                name="HomeScreen" 
-                component={HomeScreen} 
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen 
-                name="SelectPlayerScreen" 
-                component={SelectPlayerScreen}
-              />
-              <Stack.Screen 
-                name="GameScreen" 
-                component={GameScreen}
-                options={{ headerShown: false, gestureEnabled: false }}
-              />
-            </Stack.Navigator>
-        }
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SelectPlayerScreen"
+              component={SelectPlayerScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="GameScreen"
+              component={GameScreen}
+              options={{headerShown: false, gestureEnabled: false}}
+            />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </SocketProvider>
   );
-}
+};
 
 export default App;

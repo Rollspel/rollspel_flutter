@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, ImageBackground, Image} from 'react-native';
 
 import theme from '../modules/theme';
 import GameBox from '../components/GameBox';
@@ -8,7 +8,7 @@ const dataGameBox = [
   {
     id: '1',
     title: 'Morpion',
-    cover: require('../modules/images/background.jpg'),
+    cover: require('../modules/images/morpion.jpg'),
     description:
       'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
     players: 2,
@@ -46,6 +46,9 @@ const dataGameBox = [
   },
 ];
 
+const background = require('../modules/images/background.jpg');
+const logo = require('../modules/images/logo_white.png');
+
 const HomeScreen = (props) => {
   const renderGameBox = ({item, index}) => (
     <View style={index < dataGameBox.length - 1 && styles.border}>
@@ -65,29 +68,33 @@ const HomeScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <FlatList
-        contentContainerStyle={styles.flatlist}
-        data={dataGameBox}
-        renderItem={renderGameBox}
-        keyExtractor={(item) => item.id}
-      />
+      <ImageBackground source={background} style={styles.backgroundImage}>
+        <Image source={logo} style={styles.logo} />
+        <FlatList
+          contentContainerStyle={styles.flatlist}
+          data={dataGameBox}
+          renderItem={renderGameBox}
+          keyExtractor={(item) => item.id}
+        />
+      </ImageBackground>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   screen: {
-    paddingVertical: 50,
     flex: 1,
-    backgroundColor: theme.color.white,
+  },
+  logo: {
+    height: 80,
+  },
+  backgroundImage: {
+    width: '100%',
+    height: '110%',
+    paddingTop: 30,
   },
   flatlist: {
     flexGrow: 1,
-  },
-  border: {
-    borderBottomWidth: 1,
-    borderColor: theme.color.gray,
-    marginHorizontal: theme.layout.paddingL,
   },
 });
 

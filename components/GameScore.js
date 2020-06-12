@@ -4,8 +4,8 @@ import theme from '../modules/theme';
 
 const GameScore = ({players}) => (
   <View style={styles.gameScore}>
-    {players.map((player) => (
-      <View style={styles.row}>
+    {players.map((player, index) => (
+      <View style={styles.row} key={index}>
         <Text style={styles.playerName}>{player}</Text>
         <Text style={styles.playerScore}>2</Text>
       </View>

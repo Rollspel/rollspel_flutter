@@ -53,6 +53,7 @@ const GameScreen = (props) => {
 
   React.useEffect(() => {
     socket.on('player_receive_new_board', (newBoard) => {
+      console.log(newBoard);
       setBoard(newBoard);
     });
 

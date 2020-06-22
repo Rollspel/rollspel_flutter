@@ -19,7 +19,7 @@ const App = () => {
 
   React.useEffect(() => {
     const initSocket = {
-      socket: io.connect('http://localhost:5000/', {
+      socket: io.connect('http://afternoon-forest-61554.herokuapp.com', {
         transports: ['websocket'],
         reconnectionAttempts: 10,
         reconnection: true,

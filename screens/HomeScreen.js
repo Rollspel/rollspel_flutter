@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {View, StyleSheet, FlatList, ImageBackground, Image} from 'react-native';
+import {View, StyleSheet, FlatList, ImageBackground, Image, Button} from 'react-native';
 
 import theme from '../modules/theme';
 import GameBox from '../components/GameBox';
+import { withSocketContext } from '../components/SocketProvider';
 
 const dataGameBox = [
   {
@@ -66,10 +67,15 @@ const HomeScreen = (props) => {
     props.navigation.navigate('SelectPlayerScreen', {game});
   };
 
+  const handleTestSocket = () => {
+    props.socket.socket.emit('receive_message', "salut je test");
+  };
+
   return (
     <View style={styles.screen}>
       <ImageBackground source={background} style={styles.backgroundImage}>
         <Image source={logo} style={styles.logo} />
+        <Button onPress={handleTestSocket} title="button" />
         <FlatList
           contentContainerStyle={styles.flatlist}
           data={dataGameBox}
@@ -98,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default withSocketContext(HomeScreen);

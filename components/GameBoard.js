@@ -100,10 +100,11 @@ const GameBoard = React.forwardRef((props, ref) => {
       animation="fadeIn"
       ref={(refView) => (view = refView)}>
       {board.map((row, rowIndex) => (
-        <View style={styles.boardGame}>
+        <View style={styles.boardGame} key={rowIndex}>
           {row.map((column, columnIndex) => {
             return (
               <TouchableOpacity
+                key={columnIndex}
                 style={styles.boardCase}
                 onPress={() => handleCasePress(rowIndex, columnIndex)}>
                 {column === 0 ? (

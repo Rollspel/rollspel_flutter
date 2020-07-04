@@ -52,24 +52,23 @@ const GameScreen = (props) => {
   }, [beginTimerActive, beginTimer, turnMessage, players, activePlayerIndex]);
 
   React.useEffect(() => {
-    socket.on('player_receive_new_board', (newBoard) => {
-      console.log(newBoard);
-      setBoard(newBoard);
-    });
-
-    socket.on('player_receive_tap_not_empty', () => {
-      gameboardRef.current.bounceCase();
-    });
-
-    socket.on('player_receive_winner', (winnerIndex) => {
-      setTurnMessage('');
-      setTurnMessage(`${players[winnerIndex]} won the game !`);
-      setTimeout(() => {
-        setBoard(game.boardDefault);
+    socket.on('player_receive_new_board', (data) => {
+      console.log(data);
+      setBoard(data.board);
+      if (handleResultValidation(data.board)) {
         setTurnMessage('');
-      }, 3000);
+        setTurnMessage(`${players[activePlayerIndex]} won the game !`);
+        setTimeout(() => {
+          socket.emit('send_player_win', {
+            gameboardID: data.user.gameboardID,
+            activePlayerIndex,
+          });
+          setBoard(game.boardDefault);
+          setTurnMessage('');
+        }, 3000);
+      }
     });
-  }, [socket, players, game.boardDefault]);
+  }, [activePlayerIndex, game.boardDefault, players, socket]);
 
   React.useEffect(() => {
     if (gameTimerActive) {
@@ -93,6 +92,70 @@ const GameScreen = (props) => {
   const handleExitPress = () => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     props.navigation.popToTop();
+  };
+
+  const winningConditions = [
+    [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ],
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+    ],
+    [
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ],
+    [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ],
+    [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+    ],
+    [
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ],
+    [
+      [0, 2],
+      [1, 1],
+      [2, 0],
+    ],
+  ];
+
+  const handleResultValidation = (newBoard) => {
+    console.warn(newBoard);
+    let roundWon = false;
+    for (let i = 0; i <= 7; i++) {
+      const winCondition = winningConditions[i];
+      let a = newBoard[winCondition[0][0]][winCondition[0][1]];
+      let b = newBoard[winCondition[1][0]][winCondition[1][1]];
+      let c = newBoard[winCondition[2][0]][winCondition[2][1]];
+      if (a === 9 || b === 9 || c === 9) {
+        continue;
+      }
+      if (a === b && b === c) {
+        roundWon = true;
+        break;
+      }
+    }
+    if (roundWon) {
+      return roundWon;
+    }
   };
 
   return (

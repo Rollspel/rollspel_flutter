@@ -2,6 +2,7 @@ import * as React from 'react';
 import {View, StyleSheet} from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import axios from 'axios';
 
 import theme from '../modules/theme';
 import GameMiddleMessage from '../components/GameMiddleMessage';
@@ -11,6 +12,7 @@ import GameMenu from '../components/GameMenu';
 import GameTimer from '../components/GameTimer';
 import {withSocketContext} from '../components/SocketProvider';
 import GameScore from '../components/GameScore';
+import {winningConditions} from '../modules/utils';
 
 const GameScreen = (props) => {
   const {game, players} = props.route.params;
@@ -77,50 +79,19 @@ const GameScreen = (props) => {
   const handleExitPress = () => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     props.navigation.popToTop();
+    axios.post('http://afternoon-forest-61554.herokuapp.com/party/add', {
+      finalBoardState: [],
+      players: Object.values(players),
+      winner:
+        activeScore[0] > activeScore[1]
+          ? players[0]
+          : activeScore[0] === activeScore[1]
+          ? 'DRAW'
+          : players[1],
+      rounds: activeScore,
+      game: 'Morpion',
+    });
   };
-
-  const winningConditions = [
-    [
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [1, 2],
-    ],
-    [
-      [2, 0],
-      [2, 1],
-      [2, 2],
-    ],
-    [
-      [0, 0],
-      [1, 0],
-      [2, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [2, 1],
-    ],
-    [
-      [0, 2],
-      [1, 2],
-      [2, 2],
-    ],
-    [
-      [0, 0],
-      [1, 1],
-      [2, 2],
-    ],
-    [
-      [0, 2],
-      [1, 1],
-      [2, 0],
-    ],
-  ];
 
   const handleResultValidation = (newBoard) => {
     let roundWon = false;

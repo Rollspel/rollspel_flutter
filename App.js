@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {NavigationContainer, Link} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import io from 'socket.io-client';
@@ -8,6 +8,7 @@ import LinkScreen from './screens/LinkScreen';
 import HomeScreen from './screens/HomeScreen';
 import SelectPlayerScreen from './screens/SelectPlayerScreen';
 import GameScreen from './screens/GameScreen';
+import ScoreScreen from './screens/ScoreScreen';
 
 import {SocketProvider} from './components/SocketProvider';
 
@@ -66,6 +67,11 @@ const App = () => {
               name="GameScreen"
               component={GameScreen}
               options={{headerShown: false, gestureEnabled: false}}
+            />
+            <Stack.Screen
+              name="ScoreScreen"
+              component={ScoreScreen}
+              options={{headerShown: false}}
             />
           </Stack.Navigator>
         )}

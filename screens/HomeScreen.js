@@ -1,54 +1,14 @@
 import * as React from 'react';
-import {View, StyleSheet, FlatList, ImageBackground, Image, Button} from 'react-native';
+import {View, StyleSheet, FlatList, ImageBackground, Image} from 'react-native';
 
-import theme from '../modules/theme';
 import GameBox from '../components/GameBox';
-import { withSocketContext } from '../components/SocketProvider';
-
-const dataGameBox = [
-  {
-    id: '1',
-    title: 'Morpion',
-    cover: require('../modules/images/morpion.jpg'),
-    description:
-      'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
-    players: 2,
-    boardDefault: [
-      [9, 9, 9],
-      [9, 9, 9],
-      [9, 9, 9],
-    ],
-  },
-  {
-    id: '2',
-    title: 'Picollo',
-    cover: require('../modules/images/picollo.jpeg'),
-    description:
-      'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
-    players: 4,
-    boardDefault: [
-      [9, 9, 9, 9],
-      [9, 9, 9, 9],
-      [9, 9, 9, 9],
-    ],
-  },
-  {
-    id: '3',
-    title: 'Echec',
-    cover: require('../modules/images/echec.jpg'),
-    description:
-      'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
-    players: 1,
-    boardDefault: [
-      [9, 9, 9],
-      [9, 9, 9],
-      [9, 9, 9],
-    ],
-  },
-];
+import {withSocketContext} from '../components/SocketProvider';
+import {dataGameBox} from '../modules/utils';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const background = require('../modules/images/background.jpg');
 const logo = require('../modules/images/logo_white.png');
+const crown = require('../modules/images/crown.png');
 
 const HomeScreen = (props) => {
   const renderGameBox = ({item, index}) => (
@@ -66,16 +26,22 @@ const HomeScreen = (props) => {
   const handleGamePress = (game) => {
     props.navigation.navigate('SelectPlayerScreen', {game});
   };
-
-  const handleTestSocket = () => {
-    props.socket.socket.emit('receive_message', "salut je test");
+  
+  const handleScorePress = () => {
+    props.navigation.navigate('ScoreScreen');
   };
 
   return (
     <View style={styles.screen}>
       <ImageBackground source={background} style={styles.backgroundImage}>
-        <Image source={logo} style={styles.logo} />
-        <Button onPress={handleTestSocket} title="button" />
+        <View style={styles.row}>
+          <Image source={logo} style={styles.logo} />
+          <TouchableOpacity
+            style={styles.crownButton}
+            onPress={handleScorePress}>
+            <Image source={crown} style={styles.crown} />
+          </TouchableOpacity>
+        </View>
         <FlatList
           contentContainerStyle={styles.flatlist}
           data={dataGameBox}
@@ -91,8 +57,25 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
+  row: {
+    flexDirection: 'row',
+  },
   logo: {
     height: 80,
+    flex: 1,
+  },
+  crownButton: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  crown: {
+    marginRight: 20,
+    width: 20,
+    height: 20,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 1000,
   },
   backgroundImage: {
     width: '100%',

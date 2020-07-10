@@ -52,6 +52,10 @@ const GameScreen = (props) => {
         setBoard(game.boardDefault);
         setActivePlayerIndex(Math.floor(Math.random() * game.players));
       } else if (handleCheckDraw(data.board)) {
+        socket.emit('send_player_draw', {
+          gameboardID: data.user.gameboardID,
+          activePlayerIndex,
+        });
         setBoard(game.boardDefault);
         setActivePlayerIndex(Math.floor(Math.random() * game.players));
       } else {
@@ -63,6 +67,7 @@ const GameScreen = (props) => {
         }
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, activePlayerIndex, game.players]);
 
   const handleMenuPress = () => {

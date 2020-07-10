@@ -49,10 +49,11 @@ const GameScreen = (props) => {
           gameboardID: data.user.gameboardID,
           activePlayerIndex,
         });
-        setTimeout(() => {
-          setBoard(game.boardDefault);
-          setActivePlayerIndex(Math.floor(Math.random() * game.players));
-        }, 1000);
+        setBoard(game.boardDefault);
+        setActivePlayerIndex(Math.floor(Math.random() * game.players));
+      } else if (handleCheckDraw(data.board)) {
+        setBoard(game.boardDefault);
+        setActivePlayerIndex(Math.floor(Math.random() * game.players));
       } else {
         socket.off('player_receive_new_board');
         if (activePlayerIndex < game.players - 1) {
@@ -134,6 +135,17 @@ const GameScreen = (props) => {
     if (roundWon) {
       return roundWon;
     }
+  };
+
+  const handleCheckDraw = (newBoard) => {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (newBoard[i][j] === 9) {
+          return false;
+        }
+      }
+    }
+    return true;
   };
 
   return (

@@ -26,7 +26,7 @@ const HomeScreen = (props) => {
   const handleGamePress = (game) => {
     props.navigation.navigate('SelectPlayerScreen', {game});
   };
-  
+
   const handleScorePress = () => {
     props.navigation.navigate('ScoreScreen');
   };

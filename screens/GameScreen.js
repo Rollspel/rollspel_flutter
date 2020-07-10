@@ -21,6 +21,7 @@ const GameScreen = (props) => {
   const [board, setBoard] = React.useState(game.boardDefault);
   const [activePlayerIndex, setActivePlayerIndex] = React.useState(0);
   const [activeScore, setActiveScore] = React.useState([0, 0]);
+  const [idGameboard, setIdGameboard] = React.useState(0);
   const {socket} = props.socket;
   const gameboardRef = React.useRef();
 
@@ -43,6 +44,7 @@ const GameScreen = (props) => {
   React.useEffect(() => {
     socket.on('player_receive_new_board', (data) => {
       setBoard(data.board);
+      setIdGameboard(data.user.gameboardID);
       if (handleResultValidation(data.board)) {
         let score = activeScore;
         score[activePlayerIndex] += 1;
@@ -80,14 +82,14 @@ const GameScreen = (props) => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     props.navigation.popToTop();
     axios.post('http://afternoon-forest-61554.herokuapp.com/party/add', {
-      finalBoardState: [],
+      gameboardID: idGameboard,
       players: Object.values(players),
       winner:
         activeScore[0] > activeScore[1]
-          ? players[0]
+          ? players[0].toUpperCase()
           : activeScore[0] === activeScore[1]
           ? 'DRAW'
-          : players[1],
+          : players[1].toUpperCase(),
       rounds: activeScore,
       game: 'Morpion',
     });

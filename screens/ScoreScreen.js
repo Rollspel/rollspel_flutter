@@ -31,12 +31,12 @@ const ScoreScreen = (props) => {
       <ImageBackground source={background} style={styles.backgroundImage}>
         <Image source={logo} style={styles.logo} />
         {parties.length > 0 &&
-          parties.map((party) => {
+          parties.map((party, index) => {
             if (!party.players || !party.winner) {
               return;
             }
             return (
-              <View style={styles.partyContainer}>
+              <View style={styles.partyContainer} key={index}>
                 <Text style={styles.players}>
                   {party.players[0]} - {party.players[1]}
                 </Text>

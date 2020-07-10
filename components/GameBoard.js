@@ -15,84 +15,14 @@ const GameBoard = React.forwardRef((props, ref) => {
   }));
 
   const handleCasePress = (rowIndex, columnIndex) => {
-    if (board[rowIndex][columnIndex] === 9) {
-      board[rowIndex][columnIndex] = activePlayerIndex;
-      const result = handleResultValidation();
-      if (result) {
-        socket.emit('player_win', {
-          gameboardID: '12345',
-          activePlayerIndex: activePlayerIndex,
-        });
-      } else {
-        socket.emit('player_tap', {gameboardID: '12345', board: board});
-      }
-    } else {
-      socket.emit('player_tap_not_empty', {gameboardID: '12345'});
-    }
+    const updatedBoard = [
+      [9, 9, 9],
+      [9, 9, 9],
+      [9, 9, 9],
+    ];
+    updatedBoard[rowIndex][columnIndex] = activePlayerIndex;
+    socket.emit('player_tap', {gameboardID: '12345', board: updatedBoard});
   };
-
-  const winningConditions = [
-    [
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [1, 2],
-    ],
-    [
-      [2, 0],
-      [2, 1],
-      [2, 2],
-    ],
-    [
-      [0, 0],
-      [1, 0],
-      [2, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [2, 1],
-    ],
-    [
-      [0, 2],
-      [1, 2],
-      [2, 2],
-    ],
-    [
-      [0, 0],
-      [1, 1],
-      [2, 2],
-    ],
-    [
-      [0, 2],
-      [1, 1],
-      [2, 0],
-    ],
-  ];
-
-  function handleResultValidation() {
-    let roundWon = false;
-    for (let i = 0; i <= 7; i++) {
-      const winCondition = winningConditions[i];
-      let a = board[winCondition[0][0]][winCondition[0][1]];
-      let b = board[winCondition[1][0]][winCondition[1][1]];
-      let c = board[winCondition[2][0]][winCondition[2][1]];
-      if (a === 9 || b === 9 || c === 9) {
-        continue;
-      }
-      if (a === b && b === c) {
-        roundWon = true;
-        break;
-      }
-    }
-    if (roundWon) {
-      return roundWon;
-    }
-  }
 
   return (
     <Animatable.View

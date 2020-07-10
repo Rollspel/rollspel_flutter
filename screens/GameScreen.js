@@ -13,15 +13,13 @@ import {withSocketContext} from '../components/SocketProvider';
 import GameScore from '../components/GameScore';
 
 const GameScreen = (props) => {
-  const [beginTimer, setBeginTimer] = React.useState(5);
-  const [beginTimerActive, setBeginTimerActive] = React.useState(true);
-  const [gameTimerActive, setGameTimerActive] = React.useState(false);
+  const {game, players} = props.route.params;
   const [turnMessage, setTurnMessage] = React.useState(false);
   const [isMenuVisible, setIsMenuVisible] = React.useState(false);
-  const [board, setBoard] = React.useState([]);
+  const [board, setBoard] = React.useState(game.boardDefault);
   const [activePlayerIndex, setActivePlayerIndex] = React.useState(0);
+  const [activeScore, setActiveScore] = React.useState([0, 0]);
   const {socket} = props.socket;
-  const {game, players} = props.route.params;
   const gameboardRef = React.useRef();
 
   React.useEffect(() => {
@@ -29,61 +27,42 @@ const GameScreen = (props) => {
       ScreenOrientation.OrientationLock.LANDSCAPE_LEFT,
     );
     setActivePlayerIndex(Math.floor(Math.random() * game.players));
-    setBoard(game.boardDefault);
-  }, [game.players, game.boardDefault]);
+  }, [game.players]);
 
   React.useEffect(() => {
-    let interval = null;
-    if (beginTimerActive) {
-      if (beginTimer <= 0) {
-        setBeginTimerActive(false);
-        clearInterval(interval);
-        setTurnMessage(`${players[activePlayerIndex]}, it's your turn !`);
-        setTimeout(() => {
-          setTurnMessage('');
-          setGameTimerActive(true);
-        }, 2000);
-      }
-      interval = setInterval(() => {
-        setBeginTimer((prevBeginTimer) => prevBeginTimer - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [beginTimerActive, beginTimer, turnMessage, players, activePlayerIndex]);
+    setTurnMessage(`${players[activePlayerIndex]}, it's your turn !`);
+    setTimeout(() => {
+      setTurnMessage('');
+    }, 2000);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePlayerIndex]);
 
   React.useEffect(() => {
     socket.on('player_receive_new_board', (data) => {
-      console.log(data);
       setBoard(data.board);
       if (handleResultValidation(data.board)) {
-        setTurnMessage('');
-        setTurnMessage(`${players[activePlayerIndex]} won the game !`);
+        let score = activeScore;
+        score[activePlayerIndex] += 1;
+        setActiveScore(score);
+        socket.emit('send_player_win', {
+          gameboardID: data.user.gameboardID,
+          activePlayerIndex,
+        });
         setTimeout(() => {
-          socket.emit('send_player_win', {
-            gameboardID: data.user.gameboardID,
-            activePlayerIndex,
-          });
           setBoard(game.boardDefault);
-          setTurnMessage('');
-        }, 3000);
+          setActivePlayerIndex(Math.floor(Math.random() * game.players));
+        }, 1000);
+      } else {
+        socket.off('player_receive_new_board');
+        if (activePlayerIndex < game.players - 1) {
+          setActivePlayerIndex((prevIndex) => prevIndex + 1);
+        } else {
+          setActivePlayerIndex(0);
+        }
       }
     });
-  }, [activePlayerIndex, game.boardDefault, players, socket]);
-
-  React.useEffect(() => {
-    if (gameTimerActive) {
-      if (activePlayerIndex < game.players - 1) {
-        setActivePlayerIndex((prevIndex) => prevIndex + 1);
-      } else {
-        setActivePlayerIndex(0);
-      }
-      setTurnMessage(`${players[activePlayerIndex]}, it's your turn !`);
-      setTimeout(() => {
-        setTurnMessage('');
-      }, 2000);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [board, gameTimerActive]);
+  }, [socket, activePlayerIndex, game.players]);
 
   const handleMenuPress = () => {
     setIsMenuVisible(true);
@@ -138,7 +117,6 @@ const GameScreen = (props) => {
   ];
 
   const handleResultValidation = (newBoard) => {
-    console.warn(newBoard);
     let roundWon = false;
     for (let i = 0; i <= 7; i++) {
       const winCondition = winningConditions[i];
@@ -160,12 +138,6 @@ const GameScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      {beginTimer > 0 && (
-        <GameMiddleMessage
-          text={`Game will start in ${beginTimer}`}
-          animation="fadeIn"
-        />
-      )}
       <GameMiddleMessage text={turnMessage} animation="slideInUp" />
       <View style={styles.menu}>
         <View style={styles.row}>
@@ -178,21 +150,19 @@ const GameScreen = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      <GameScore players={Object.values(players)} />
-      {beginTimer === 0 && (
-        <GameBoard
-          ref={gameboardRef}
-          board={board}
-          socket={socket}
-          activePlayerIndex={activePlayerIndex}
-        />
-      )}
+      <GameScore players={Object.values(players)} activeScore={activeScore} />
+      <GameBoard
+        ref={gameboardRef}
+        board={board}
+        socket={socket}
+        activePlayerIndex={activePlayerIndex}
+      />
       <GameMenu
         isVisible={isMenuVisible}
         closeMenu={() => setIsMenuVisible(false)}
         onExitPress={handleExitPress}
       />
-      <GameTimer isActive={gameTimerActive} />
+      <GameTimer isActive={true} />
     </View>
   );
 };

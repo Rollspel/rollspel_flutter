@@ -2,12 +2,12 @@ import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import theme from '../modules/theme';
 
-const GameScore = ({players}) => (
+const GameScore = ({players, activeScore}) => (
   <View style={styles.gameScore}>
     {players.map((player, index) => (
       <View style={styles.row} key={index}>
         <Text style={styles.playerName}>{player}</Text>
-        <Text style={styles.playerScore}>2</Text>
+        <Text style={styles.playerScore}>{activeScore[index]}</Text>
       </View>
     ))}
   </View>

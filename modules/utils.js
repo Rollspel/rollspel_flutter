@@ -47,7 +47,7 @@ export const dataGameBox = [
     title: 'Morpion',
     cover: require('../modules/images/morpion.jpg'),
     description:
-      'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
+      'Le tic-tac-toe, aussi appelé « morpion » et « oxo » en Belgique, est un jeu de réflexion se pratiquant à deux joueurs au tour par tour dont le but est de créer le premier un alignement.',
     players: 2,
     boardDefault: [
       [9, 9, 9],
@@ -60,7 +60,7 @@ export const dataGameBox = [
     title: 'Picollo',
     cover: require('../modules/images/picollo.jpeg'),
     description:
-      'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
+      'En groupe ou à tour de rôle, vous devrez répondre à des questions et suivre ses indications parfois déjantées.',
     players: 4,
     boardDefault: [
       [9, 9, 9, 9],
@@ -70,10 +70,10 @@ export const dataGameBox = [
   },
   {
     id: '3',
-    title: 'Echec',
-    cover: require('../modules/images/echec.jpg'),
+    title: 'Simon',
+    cover: require('../modules/images/simon_says.png'),
     description:
-      'Aliqte a tortor. Duis et lacus id eros ultricies varius. Donec quis erat vel augue convallis finibus sed vitae massa.',
+      'Simon est un jeu de société électronique de forme circulaire comportant quatre grosses touches de couleurs différentes : rouge, vert, bleu et jaune.',
     players: 1,
     boardDefault: [
       [9, 9, 9],

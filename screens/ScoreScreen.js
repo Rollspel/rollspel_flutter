@@ -27,7 +27,7 @@ const ScoreScreen = (props) => {
   }, []);
 
   return (
-    <View style={styles.screen}>
+    <ScrollView style={styles.screen}>
       <ImageBackground source={background} style={styles.backgroundImage}>
         <Image source={logo} style={styles.logo} />
         {parties.length > 0 &&
@@ -49,7 +49,7 @@ const ScoreScreen = (props) => {
             );
           })}
       </ImageBackground>
-    </View>
+    </ScrollView>
   );
 };
 
